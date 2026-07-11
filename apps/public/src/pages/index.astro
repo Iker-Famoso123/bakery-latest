@@ -1,0 +1,30 @@
+---
+import { nowISO } from '@rf/types';
+import { PostCard } from '@rf/ui';
+
+// Scaffold de Fase 1: valida SSR + isla de React consumiendo @rf/ui.
+// Home real, listado de blog, menú y About llegan en la Fase 4.
+const publishAt = nowISO();
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Repostería Famoso</title>
+  </head>
+  <body style="font-family: system-ui; padding: 2rem;">
+    <h1>Repostería Famoso</h1>
+    <p>Scaffold de Fase 1 · portal público (Astro SSR).</p>
+    <PostCard
+      client:load
+      post={{
+        title: 'Post de ejemplo',
+        slug: 'ejemplo',
+        coverImage: null,
+        publishAt,
+        pinned: false,
+      }}
+    />
+  </body>
+</html>
