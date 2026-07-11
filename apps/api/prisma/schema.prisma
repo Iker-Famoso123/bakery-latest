@@ -1,0 +1,126 @@
+// Prisma es la única fuente de verdad del modelo de datos.
+// Cambios -> `pnpm db:migrate` (genera SQL versionado, commiteado en git).
+// Deploy en el Pi -> `pnpm db:deploy`.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  editor
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum CategoryType {
+  post
+  product
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  name         String
+  role         Role           @default(editor)
+  active       Boolean        @default(true)
+  posts        Post[]
+  refreshTokens RefreshToken[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([active])
+}
+
+// Sesiones revocables: guardamos el HASH del refresh token, nunca el token en claro.
+// Desactivar un usuario o revocar aquí mata sus sesiones de inmediato.
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Category {
+  id       String       @id @default(cuid())
+  name     String
+  slug     String
+  type     CategoryType
+  posts    Post[]
+  products Product[]
+
+  @@unique([type, slug]) // slug único por tipo (post/product)
+  @@index([type])
+}
+
+model Post {
+  id         String     @id @default(cuid())
+  title      String
+  slug       String     @unique
+  body       Json // documento de TipTap (ProseMirror JSON)
+  coverImage String? // key/URL de R2
+  status     PostStatus @default(DRAFT)
+  publishAt  DateTime
+  expiresAt  DateTime? // null = permanente
+  pinned     Boolean    @default(false)
+  category   Category?  @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  author     User       @relation(fields: [authorId], references: [id])
+  authorId   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  // Cubre el filtro de vigencia del portal público:
+  // status = PUBLISHED AND publishAt <= now AND (expiresAt IS NULL OR expiresAt > now)
+  @@index([status, publishAt, expiresAt])
+  // Orden de listado: fijados primero, luego por fecha de publicación.
+  @@index([pinned, publishAt])
+  @@index([categoryId])
+  @@index([authorId])
+}
+
+model Product {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  images      Json // ProductImage[] (keys + variantes en R2)
+  details     Json // ProductDetails (ingredientes, precio informativo, disponibilidad)
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  position    Int // orden del menú
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([active, position])
+  @@index([categoryId])
+}
+
+// Fila única de configuración editable desde el panel (About).
+model Settings {
+  id        String   @id @default("singleton")
+  whatsapp  String?
+  telefono  String?
+  direccion String?
+  lat       Float?
+  lng       Float?
+  redes     Json     @default("[]") // SocialLink[]
+  horarios  Json     @default("[]") // Horario[]
+  updatedAt DateTime @updatedAt
+}
