@@ -5,6 +5,13 @@
  * La conversión a `America/Mexico_City` ocurre solo al presentar (ver `toMexico`).
  */
 
+/** Respuesta de login/refresh de la API. */
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: UserDto;
+}
+
 /** Respuesta paginada estándar de la API. */
 export interface Paginated<T> {
   items: T[];
