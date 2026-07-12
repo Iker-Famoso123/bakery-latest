@@ -1,0 +1,41 @@
+---
+import Concha from './Concha.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+const links = [
+  { href: '/', label: 'Inicio' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/menu', label: 'Menú' },
+  { href: '/nosotros', label: 'Nosotros' },
+];
+---
+
+<header class="sticky top-0 z-30 border-b border-linea bg-masa/85 backdrop-blur">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3">
+    <a href="/" class="flex items-center gap-2.5">
+      <Concha class="size-8 shrink-0 text-concha" />
+      <span class="font-display text-lg leading-none text-cafe">
+        Repostería <span class="font-semibold text-concha-hondo">Famoso</span>
+      </span>
+    </a>
+    <nav class="flex items-center gap-1 text-sm">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'rounded-lg px-3 py-2 font-medium transition',
+              isActive(link.href)
+                ? 'text-concha-hondo'
+                : 'text-cafe-suave hover:bg-masa-hondo hover:text-cafe',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

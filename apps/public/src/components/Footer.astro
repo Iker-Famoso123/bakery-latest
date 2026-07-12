@@ -1,0 +1,60 @@
+---
+import type { SettingsDto } from '@rf/types';
+import { now } from '@rf/types';
+import { whatsappLink } from '../lib/format';
+
+interface Props {
+  settings: SettingsDto | null;
+}
+const { settings } = Astro.props;
+const year = now().year;
+---
+
+<footer class="mt-16 border-t border-linea bg-masa-hondo/40">
+  <div class="mx-auto grid max-w-5xl gap-8 px-5 py-12 sm:grid-cols-3">
+    <div>
+      <p class="font-display text-lg text-cafe">Repostería Famoso</p>
+      <p class="mt-1 text-sm text-cafe-suave">Pan dulce y repostería, hecho en casa.</p>
+    </div>
+
+    {
+      settings && (settings.whatsapp || settings.telefono || settings.direccion) ? (
+        <div class="text-sm">
+          <p class="mb-2 font-semibold text-cafe">Contacto</p>
+          <ul class="flex flex-col gap-1 text-cafe-suave">
+            {settings.whatsapp ? (
+              <li>
+                <a class="hover:text-concha-hondo" href={whatsappLink(settings.whatsapp)}>
+                  WhatsApp: {settings.whatsapp}
+                </a>
+              </li>
+            ) : null}
+            {settings.telefono ? <li>Tel: {settings.telefono}</li> : null}
+            {settings.direccion ? <li>{settings.direccion}</li> : null}
+          </ul>
+        </div>
+      ) : null
+    }
+
+    {
+      settings && settings.redes.length > 0 ? (
+        <div class="text-sm">
+          <p class="mb-2 font-semibold text-cafe">Síguenos</p>
+          <ul class="flex flex-col gap-1 text-cafe-suave">
+            {settings.redes.map((red) => (
+              <li>
+                <a class="hover:text-concha-hondo" href={red.url} rel="noopener noreferrer">
+                  {red.tipo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null
+    }
+  </div>
+
+  <div class="border-t border-linea py-4 text-center text-xs text-tenue">
+    © {year} Repostería Famoso
+  </div>
+</footer>
