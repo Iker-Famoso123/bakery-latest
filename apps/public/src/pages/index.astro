@@ -1,30 +1,92 @@
 ---
-import { nowISO } from '@rf/types';
-import { PostCard } from '@rf/ui';
+import { PostCard, ProductCard } from '@rf/ui';
+import Concha from '../components/Concha.astro';
+import Layout from '../layouts/Layout.astro';
+import { getPosts, getProducts, safe } from '../lib/api';
 
-// Scaffold de Fase 1: valida SSR + isla de React consumiendo @rf/ui.
-// Home real, listado de blog, menú y About llegan en la Fase 4.
-const publishAt = nowISO();
+const products = (await safe(getProducts(), [])).slice(0, 3);
+const posts = (
+  await safe(getPosts(1, 3), { items: [], total: 0, page: 1, limit: 3 })
+).items;
 ---
 
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Repostería Famoso</title>
-  </head>
-  <body style="font-family: system-ui; padding: 2rem;">
-    <h1>Repostería Famoso</h1>
-    <p>Scaffold de Fase 1 · portal público (Astro SSR).</p>
-    <PostCard
-      client:load
-      post={{
-        title: 'Post de ejemplo',
-        slug: 'ejemplo',
-        coverImage: null,
-        publishAt,
-        pinned: false,
-      }}
+<Layout
+  title="Repostería Famoso"
+  description="Panadería y repostería artesanal. Descubre nuestro pan dulce, el menú del día y los últimos avisos."
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-linea">
+    <Concha class="pointer-events-none absolute -left-16 -top-10 size-64 text-concha-tenue" />
+    <Concha
+      class="pointer-events-none absolute -bottom-24 -right-12 size-72 text-costra-tenue"
     />
-  </body>
-</html>
+    <div class="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32">
+      <p class="text-xs font-semibold uppercase tracking-[0.18em] text-concha-hondo">
+        Panadería artesanal
+      </p>
+      <h1 class="mt-4 font-display text-5xl leading-[1.05] text-cafe sm:text-6xl">
+        Pan dulce, hecho en casa
+      </h1>
+      <p class="mx-auto mt-5 max-w-xl text-lg text-cafe-suave">
+        Recetas de familia, horneadas cada día. Conoce nuestro menú y entérate de lo
+        que sale del horno.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <a
+          href="/menu"
+          class="rounded-full bg-concha px-6 py-3 font-medium text-white shadow-sm transition hover:bg-concha-hondo"
+        >
+          Ver el menú
+        </a>
+        <a
+          href="/blog"
+          class="rounded-full border border-linea bg-crema px-6 py-3 font-medium text-cafe transition hover:bg-masa-hondo"
+        >
+          Leer el blog
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panes destacados -->
+  <section class="mx-auto max-w-5xl px-5 py-16">
+    <div class="mb-7 flex items-end justify-between gap-3">
+      <h2 class="font-display text-3xl text-cafe">Del horno</h2>
+      <a href="/menu" class="text-sm font-medium text-concha-hondo hover:underline">
+        Ver todo el menú →
+      </a>
+    </div>
+    {
+      products.length > 0 ? (
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <p class="rounded-2xl border border-dashed border-linea bg-crema/60 px-6 py-12 text-center text-cafe-suave">
+          Muy pronto verás aquí nuestros panes.
+        </p>
+      )
+    }
+  </section>
+
+  <!-- Avisos recientes -->
+  {
+    posts.length > 0 ? (
+      <section class="mx-auto max-w-5xl px-5 pb-16">
+        <div class="mb-7 flex items-end justify-between gap-3">
+          <h2 class="font-display text-3xl text-cafe">Últimos avisos</h2>
+          <a href="/blog" class="text-sm font-medium text-concha-hondo hover:underline">
+            Ver el blog →
+          </a>
+        </div>
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    ) : null
+  }
+</Layout>

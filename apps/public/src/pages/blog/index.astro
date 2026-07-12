@@ -1,0 +1,59 @@
+---
+import { PostCard } from '@rf/ui';
+import Layout from '../../layouts/Layout.astro';
+import { getPosts, safe } from '../../lib/api';
+
+const page = Math.max(1, Number(Astro.url.searchParams.get('page') ?? '1') || 1);
+const limit = 9;
+const data = await safe(getPosts(page, limit), { items: [], total: 0, page, limit });
+const totalPages = Math.max(1, Math.ceil(data.total / limit));
+---
+
+<Layout title="Blog" description="Avisos, novedades y lo que sale del horno en Repostería Famoso.">
+  <section class="mx-auto max-w-5xl px-5 py-14">
+    <header class="mb-8">
+      <h1 class="font-display text-4xl text-cafe">Blog</h1>
+      <p class="mt-2 text-cafe-suave">Avisos y novedades de la panadería.</p>
+    </header>
+
+    {
+      data.items.length > 0 ? (
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {data.items.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <p class="rounded-2xl border border-dashed border-linea bg-crema/60 px-6 py-16 text-center text-cafe-suave">
+          Todavía no hay publicaciones. Vuelve pronto.
+        </p>
+      )
+    }
+
+    {
+      totalPages > 1 ? (
+        <nav class="mt-10 flex items-center justify-center gap-4 text-sm">
+          {page > 1 ? (
+            <a
+              href={`/blog?page=${page - 1}`}
+              class="rounded-lg border border-linea bg-crema px-4 py-2 font-medium text-cafe hover:bg-masa-hondo"
+            >
+              ← Anteriores
+            </a>
+          ) : null}
+          <span class="text-tenue">
+            Página {page} de {totalPages}
+          </span>
+          {page < totalPages ? (
+            <a
+              href={`/blog?page=${page + 1}`}
+              class="rounded-lg border border-linea bg-crema px-4 py-2 font-medium text-cafe hover:bg-masa-hondo"
+            >
+              Siguientes →
+            </a>
+          ) : null}
+        </nav>
+      ) : null
+    }
+  </section>
+</Layout>

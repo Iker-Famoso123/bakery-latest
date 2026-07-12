@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProduct, safe } from '../../lib/api';
+
+const { slug } = Astro.params;
+const product = slug ? await safe(getProduct(slug), null) : null;
+
+if (!product) {
+  Astro.response.status = 404;
+}
+
+const precio = product?.details.precioInformativo;
+const ingredientes = product?.details.ingredientes ?? [];
+---
+
+{
+  product ? (
+    <Layout
+      title={product.name}
+      description={product.description ?? `${product.name} — Repostería Famoso.`}
+      image={product.images[0]?.full}
+    >
+      <section class="mx-auto max-w-4xl px-5 py-12">
+        <a href="/menu" class="text-sm font-medium text-concha-hondo hover:underline">
+          ← Volver al menú
+        </a>
+        <div class="mt-4 grid gap-8 sm:grid-cols-2">
+          <div class="overflow-hidden rounded-2xl border border-linea bg-masa-hondo">
+            {product.images[0] ? (
+              <img
+                src={product.images[0].full}
+                alt={product.name}
+                class="aspect-square w-full object-cover"
+              />
+            ) : (
+              <div class="grid aspect-square place-items-center">
+                <span class="font-display text-7xl text-concha opacity-60">
+                  {product.name.charAt(0)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h1 class="font-display text-4xl leading-tight text-cafe">{product.name}</h1>
+            {product.description ? (
+              <p class="mt-3 text-lg text-cafe-suave">{product.description}</p>
+            ) : null}
+
+            {precio != null ? (
+              <p class="mt-5 text-2xl font-semibold text-concha-hondo">
+                ${precio.toFixed(2)}
+                <span class="ml-1 text-sm font-normal text-tenue">precio de referencia</span>
+              </p>
+            ) : null}
+
+            {product.details.disponibilidad ? (
+              <p class="mt-3 text-sm text-cafe-suave">
+                <span class="font-medium text-cafe">Disponibilidad:</span>{' '}
+                {product.details.disponibilidad}
+              </p>
+            ) : null}
+
+            {ingredientes.length > 0 ? (
+              <div class="mt-6">
+                <p class="font-medium text-cafe">Ingredientes</p>
+                <ul class="mt-2 flex flex-wrap gap-2">
+                  {ingredientes.map((ing) => (
+                    <li class="rounded-full bg-costra-tenue px-3 py-1 text-sm text-costra">
+                      {ing}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    </Layout>
+  ) : (
+    <Layout title="No encontrado">
+      <section class="mx-auto max-w-xl px-5 py-24 text-center">
+        <h1 class="font-display text-4xl text-cafe">Pan no encontrado</h1>
+        <a
+          href="/menu"
+          class="mt-6 inline-block rounded-full bg-concha px-6 py-3 font-medium text-white hover:bg-concha-hondo"
+        >
+          Volver al menú
+        </a>
+      </section>
+    </Layout>
+  )
+}
