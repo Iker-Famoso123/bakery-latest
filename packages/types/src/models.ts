@@ -5,6 +5,14 @@
  * La conversión a `America/Mexico_City` ocurre solo al presentar (ver `toMexico`).
  */
 
+/** Respuesta paginada estándar de la API. */
+export interface Paginated<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export type Role = 'admin' | 'editor';
 export type PostStatus = 'DRAFT' | 'PUBLISHED';
 export type CategoryType = 'post' | 'product';
