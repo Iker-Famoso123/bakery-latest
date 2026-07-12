@@ -185,6 +185,7 @@ function ProductForm({ product }: { product?: ProductDto }) {
           </p>
           <Card className="overflow-hidden p-3">
             <ProductCard
+              preview
               product={{
                 name: name || 'Nombre del pan',
                 slug: 'preview',
