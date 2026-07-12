@@ -11,15 +11,28 @@
     "lint": "echo \"no lint\" && exit 0"
   },
   "dependencies": {
+    "@fontsource-variable/figtree": "^5.1.0",
+    "@fontsource-variable/fraunces": "^5.1.0",
     "@rf/types": "workspace:*",
     "@rf/ui": "workspace:*",
+    "@tanstack/react-query": "^5.62.0",
+    "@tiptap/pm": "^2.10.0",
+    "@tiptap/react": "^2.10.0",
+    "@tiptap/starter-kit": "^2.10.0",
+    "luxon": "^3.5.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-easy-crop": "^5.2.0",
+    "react-router": "^7.1.1",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/luxon": "^3.4.2",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.0",
     "typescript": "^5.7.3",
     "vite": "^6.0.7"
   }

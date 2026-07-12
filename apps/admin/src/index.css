@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+
+/* ── Sistema de diseño "Pan dulce" ─────────────────────────── */
+@theme {
+  --color-masa: #fbf5ef; /* fondo, crema cálida con sesgo rosado */
+  --color-masa-hondo: #f4ebe0; /* fondo hundido (sidebar, inputs) */
+  --color-crema: #fffdfb; /* superficies / tarjetas */
+  --color-cafe: #3b2a24; /* tinta principal (café espresso) */
+  --color-cafe-suave: #6f5b50; /* tinta secundaria */
+  --color-tenue: #9a8677; /* texto atenuado */
+  --color-linea: #ece1d5; /* bordes */
+
+  --color-concha: #c15a78; /* acento: rosa concha */
+  --color-concha-hondo: #a63f60; /* acento hover/activo */
+  --color-concha-tenue: #f6e6ec; /* fondo acento suave */
+  --color-costra: #b27a3e; /* secundario: caramelo de costra */
+  --color-costra-tenue: #f4e8d6;
+
+  --color-exito: #3f8a66;
+  --color-exito-tenue: #e2efe7;
+  --color-alerta: #b57d28;
+  --color-alerta-tenue: #f6ecd6;
+  --color-peligro: #bb4a42;
+  --color-peligro-tenue: #f7e3e0;
+
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Figtree Variable', system-ui, -apple-system, sans-serif;
+
+  --radius-etiqueta: 0.5rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    margin: 0;
+    background-color: var(--color-masa);
+    color: var(--color-cafe);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-concha);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  /* Contenido del editor TipTap */
+  .prosa :where(p) {
+    margin: 0.5rem 0;
+  }
+  .prosa :where(h2) {
+    font-size: 1.3rem;
+    margin: 1rem 0 0.4rem;
+  }
+  .prosa :where(ul) {
+    list-style: disc;
+    padding-left: 1.4rem;
+    margin: 0.5rem 0;
+  }
+  .prosa :where(ol) {
+    list-style: decimal;
+    padding-left: 1.4rem;
+    margin: 0.5rem 0;
+  }
+  .prosa:focus {
+    outline: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .anim-rise {
+    animation: rise 0.4s ease both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
