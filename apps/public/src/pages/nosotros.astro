@@ -1,0 +1,115 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getSettings, safe } from '../lib/api';
+import { mapsLink, whatsappLink } from '../lib/format';
+
+const settings = await safe(getSettings(), null);
+const hasCoords = settings?.lat != null && settings?.lng != null;
+---
+
+<Layout
+  title="Nosotros"
+  description="Contacto, ubicación y horarios de Repostería Famoso."
+>
+  <section class="mx-auto max-w-3xl px-5 py-14">
+    <header class="mb-8">
+      <h1 class="font-display text-4xl text-cafe">Nosotros</h1>
+      <p class="mt-2 text-cafe-suave">
+        Una panadería familiar. Pásate, escríbenos o encuéntranos.
+      </p>
+    </header>
+
+    <div class="grid gap-6 sm:grid-cols-2">
+      <!-- Contacto -->
+      <div class="rounded-2xl border border-linea bg-crema p-6">
+        <h2 class="font-display text-xl text-cafe">Contacto</h2>
+        <ul class="mt-4 flex flex-col gap-2 text-cafe-suave">
+          {
+            settings?.whatsapp ? (
+              <li>
+                <span class="font-medium text-cafe">WhatsApp:</span>{' '}
+                <a class="text-concha-hondo hover:underline" href={whatsappLink(settings.whatsapp)}>
+                  {settings.whatsapp}
+                </a>
+              </li>
+            ) : null
+          }
+          {
+            settings?.telefono ? (
+              <li>
+                <span class="font-medium text-cafe">Teléfono:</span> {settings.telefono}
+              </li>
+            ) : null
+          }
+          {
+            settings?.direccion ? (
+              <li>
+                <span class="font-medium text-cafe">Dirección:</span> {settings.direccion}
+              </li>
+            ) : null
+          }
+          {
+            hasCoords ? (
+              <li>
+                <a
+                  class="text-concha-hondo hover:underline"
+                  href={mapsLink(settings!.lat!, settings!.lng!)}
+                  rel="noopener noreferrer"
+                >
+                  Ver en el mapa →
+                </a>
+              </li>
+            ) : null
+          }
+          {
+            !settings?.whatsapp && !settings?.telefono && !settings?.direccion ? (
+              <li class="text-tenue">Pronto agregaremos nuestros datos de contacto.</li>
+            ) : null
+          }
+        </ul>
+
+        {
+          settings && settings.redes.length > 0 ? (
+            <div class="mt-5">
+              <p class="font-medium text-cafe">Redes</p>
+              <ul class="mt-2 flex flex-wrap gap-2">
+                {settings.redes.map((red) => (
+                  <li>
+                    <a
+                      class="rounded-full bg-concha-tenue px-3 py-1 text-sm font-medium text-concha-hondo hover:bg-concha hover:text-white"
+                      href={red.url}
+                      rel="noopener noreferrer"
+                    >
+                      {red.tipo}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null
+        }
+      </div>
+
+      <!-- Horarios -->
+      <div class="rounded-2xl border border-linea bg-crema p-6">
+        <h2 class="font-display text-xl text-cafe">Horarios</h2>
+        {
+          settings && settings.horarios.length > 0 ? (
+            <ul class="mt-4 flex flex-col gap-2">
+              {settings.horarios.map((h) => (
+                <li class="flex items-center justify-between border-b border-linea pb-2 text-sm last:border-0">
+                  <span class="text-cafe">{h.dia}</span>
+                  <span class="tabular-nums text-cafe-suave">
+                    {h.apertura} – {h.cierre}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="mt-4 text-tenue">Consulta nuestros horarios por WhatsApp.</p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,30 @@
+---
+import { ProductCard } from '@rf/ui';
+import Layout from '../../layouts/Layout.astro';
+import { getProducts, safe } from '../../lib/api';
+
+const products = await safe(getProducts(), []);
+---
+
+<Layout title="Menú" description="Nuestro menú de pan dulce y repostería artesanal.">
+  <section class="mx-auto max-w-5xl px-5 py-14">
+    <header class="mb-8">
+      <h1 class="font-display text-4xl text-cafe">Nuestro menú</h1>
+      <p class="mt-2 text-cafe-suave">Lo que horneamos. Los precios son solo de referencia.</p>
+    </header>
+
+    {
+      products.length > 0 ? (
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <p class="rounded-2xl border border-dashed border-linea bg-crema/60 px-6 py-16 text-center text-cafe-suave">
+          Estamos preparando el menú. Vuelve pronto.
+        </p>
+      )
+    }
+  </section>
+</Layout>
