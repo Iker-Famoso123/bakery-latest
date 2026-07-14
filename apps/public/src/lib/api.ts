@@ -1,6 +1,12 @@
 import type { Paginated, PostDto, ProductDto, SettingsDto } from '@rf/types';
 
-const API_URL = import.meta.env.PUBLIC_API_URL ?? 'http://localhost:3000';
+// En producción (adapter Node) se lee de process.env en runtime — así el
+// contenedor habla con la API por la red interna de Docker (http://api:3000).
+// En dev cae a PUBLIC_API_URL del .env, y por último a localhost.
+const API_URL =
+  (typeof process !== 'undefined' && process.env.API_URL) ||
+  import.meta.env.PUBLIC_API_URL ||
+  'http://localhost:3000';
 
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${API_URL}/api${path}`);

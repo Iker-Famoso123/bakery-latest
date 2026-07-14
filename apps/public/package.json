@@ -11,7 +11,7 @@
     "lint": "echo \"no lint\" && exit 0"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.2.1",
+    "@astrojs/node": "^9.1.3",
     "@astrojs/react": "^4.2.0",
     "@fontsource-variable/figtree": "^5.1.0",
     "@fontsource-variable/fraunces": "^5.1.0",
