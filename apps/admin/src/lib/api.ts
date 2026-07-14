@@ -1,6 +1,7 @@
 import { getRefreshToken, useAuthStore } from '../stores/auth';
+import { API_BASE } from './config';
 
-const BASE = '/api';
+const BASE = API_BASE;
 
 export class ApiError extends Error {
   constructor(
