@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.astro
+**/.turbo
+**/.wrangler
+.git
+.github
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+*.log
+.DS_Store
+DEPLOY.md
+README.md

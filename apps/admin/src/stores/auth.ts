@@ -1,5 +1,6 @@
 import type { UserDto } from '@rf/types';
 import { create } from 'zustand';
+import { API_BASE } from '../lib/config';
 
 const REFRESH_KEY = 'rf_refresh';
 
@@ -49,7 +50,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         return;
       }
       try {
-        const res = await fetch('/api/auth/refresh', {
+        const res = await fetch(`${API_BASE}/auth/refresh`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refreshToken }),

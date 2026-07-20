@@ -13,6 +13,7 @@ build/
 .env
 .env.*
 !.env.example
+!.env.*.example
 
 # prisma
 apps/api/prisma/*.db
@@ -27,3 +28,5 @@ pnpm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+DEPLOY.md
