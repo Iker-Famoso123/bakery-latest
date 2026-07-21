@@ -1,11 +1,9 @@
 # Producción (Raspberry Pi). Levanta con:
 #   docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 #
-# No publica puertos al host: se expone por Nginx Proxy Manager (NPM), que
-# alcanza los contenedores por NOMBRE a través de la red externa `proxy`.
-# Prepara esa red una sola vez (ver DEPLOY.md):
-#   docker network create proxy
-#   docker network connect proxy <contenedor-de-NPM>
+# Publica puertos DIRECTOS en el Pi (configurables por env para evitar choques).
+# El túnel de Cloudflare / NPM apuntan a la IP del Pi + estos puertos.
+# Postgres NO se publica: queda solo en la red interna del stack.
 
 # Proyecto propio: aísla contenedores/volúmenes del stack de desarrollo.
 name: reposteria-prod
@@ -21,8 +19,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - rf-pgdata:/var/lib/postgresql/data
-    networks:
-      - internal
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 10s
@@ -50,9 +46,8 @@ services:
       R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
       R2_BUCKET: ${R2_BUCKET}
       R2_PUBLIC_URL: ${R2_PUBLIC_URL}
-    networks:
-      - internal # habla con Postgres
-      - proxy # NPM → rf-api:3000 (api.reposteriafamoso.com)
+    ports:
+      - '${API_PORT:-3001}:3000' # api.reposteriafamoso.com
 
   public:
     build:
@@ -64,12 +59,11 @@ services:
     depends_on:
       - api
     environment:
-      API_URL: http://api:3000 # llama a la API por la red interna
+      API_URL: http://api:3000 # llama a la API por la red interna del stack
       HOST: 0.0.0.0
       PORT: 4321
-    networks:
-      - internal # para alcanzar la API
-      - proxy # NPM → rf-public:4321 (reposteriafamoso.com)
+    ports:
+      - '${PUBLIC_PORT:-4321}:4321' # reposteriafamoso.com
 
   admin:
     build:
@@ -80,13 +74,8 @@ services:
     image: rf-admin:latest
     container_name: rf-admin
     restart: unless-stopped
-    networks:
-      - proxy # NPM → rf-admin:80 (admin.reposteriafamoso.com)
-
-networks:
-  internal: # privada del stack (Postgres nunca sale de aquí)
-  proxy:
-    external: true # compartida con Nginx Proxy Manager
+    ports:
+      - '${ADMIN_PORT:-8082}:80' # p. ej. panel.reposteriafamoso.com
 
 volumes:
   rf-pgdata:

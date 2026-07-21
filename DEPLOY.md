@@ -1,16 +1,21 @@
 # Despliegue — Repostería Famoso (Raspberry Pi)
 
-Todo se autohospeda en el Pi (`patio`) con Docker Compose. **No se publican
-puertos al host** (evita choques con otros servicios del homelab): NPM alcanza
-los contenedores por nombre a través de una red Docker compartida (`proxy`).
+Todo se autohospeda en el Pi (`patio`) con Docker Compose. Cada app publica un
+**puerto directo** en el Pi (configurable por env para evitar choques con otros
+servicios del homelab); el túnel/NPM apuntan a la **IP del Pi + ese puerto**.
 
-| Subdominio | NPM apunta a (nombre:puerto interno) |
-|------------|--------------------------------------|
-| `reposteriafamoso.com` | `rf-public:4321` |
-| `admin.reposteriafamoso.com` | `rf-admin:80` |
-| `api.reposteriafamoso.com` | `rf-api:3000` |
+| Subdominio | App | Puerto en el Pi (`.env.prod`) |
+|------------|-----|-------------------------------|
+| `reposteriafamoso.com` | público | `PUBLIC_PORT` (def. `4321`) |
+| `panel.reposteriafamoso.com` | admin | `ADMIN_PORT` (def. `8082`) |
+| `api.reposteriafamoso.com` | API | `API_PORT` (def. `3001`) |
 
-Postgres queda **solo en la red interna** (nunca se expone).
+> El panel usa **`panel.`** (o el subdominio que prefieras) porque `admin.` suele
+> estar ocupado por la UI de Nginx Proxy Manager. El subdominio no vive en el
+> código — lo defines en el túnel/NPM; solo asegúrate de que `ADMIN_API_URL`
+> apunte a tu API.
+
+Postgres queda **solo en la red interna** (nunca se publica).
 
 ---
 
@@ -30,11 +35,7 @@ sudo apt-get install -y gnupg rclone
 ```bash
 git clone <repo> reposteria && cd reposteria
 cp .env.prod.example .env.prod
-nano .env.prod            # rellena secretos (Postgres, JWT, R2, ADMIN_API_URL)
-
-# Red compartida con NPM (una sola vez):
-docker network create proxy 2>/dev/null || true
-docker network connect proxy <contenedor-de-NPM>   # p. ej. nginx-proxy-manager
+nano .env.prod            # secretos (Postgres, JWT, R2, ADMIN_API_URL) y puertos
 
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
@@ -47,23 +48,28 @@ La API aplica las **migraciones** automáticamente al arrancar (`prisma migrate 
 docker compose -f docker-compose.prod.yml exec api pnpm db:seed
 ```
 
-Verifica (no hay puertos publicados; se comprueba por estado y por dentro):
+Verifica (usa los puertos de tu `.env.prod`):
 
 ```bash
-docker compose -f docker-compose.prod.yml ps          # todos "healthy"
-docker exec rf-api node -e "fetch('http://localhost:3000/api/health').then(r=>r.text()).then(console.log)"
+docker compose -f docker-compose.prod.yml ps      # todos "healthy"
+curl http://localhost:3001/api/health             # API   (API_PORT)
+curl -I http://localhost:4321/                     # público (PUBLIC_PORT)
+curl -I http://localhost:8082/                     # admin  (ADMIN_PORT)
 ```
 
-## 3. Exponer con Cloudflare Tunnel + NPM
+## 3. Exponer con Cloudflare Tunnel (+ NPM opcional)
 
-1. **Nginx Proxy Manager** → un *Proxy Host* por subdominio (Forward por **nombre de
-   contenedor**, gracias a la red `proxy` compartida):
-   - `reposteriafamoso.com` → `rf-public` : `4321`
-   - `admin.reposteriafamoso.com` → `rf-admin` : `80`
-   - `api.reposteriafamoso.com` → `rf-api` : `3000`
-   - Activa SSL (Let's Encrypt) y "Block Common Exploits" en cada uno.
-2. **Cloudflare Tunnel** (Zero Trust → Networks → Tunnels): agrega los tres
-   *Public Hostnames* apuntando a tu **NPM** (`http://<NPM>:80`). El túnel crea el DNS.
+Cada app escucha en `IP-del-Pi:<puerto>`. Dos formas de exponer:
+
+**A) Túnel directo** (más simple, sin NPM para estos 3):
+En Cloudflare (Zero Trust → Networks → Tunnels → tu túnel → **Public Hostnames**),
+agrega uno por subdominio, apuntando al servicio local:
+- `reposteriafamoso.com` → `http://<IP-del-Pi>:4321`
+- `panel.reposteriafamoso.com` → `http://<IP-del-Pi>:8082`
+- `api.reposteriafamoso.com` → `http://<IP-del-Pi>:3001`
+
+**B) Vía NPM** (si quieres su SSL/reglas): crea un *Proxy Host* por subdominio
+(`Forward` a `<IP-del-Pi>:<puerto>`), y el túnel apunta a NPM.
 
 > **CORS:** el admin y la API están en subdominios distintos, así que la API
 > debe permitir el origen del admin. Ya trae `enableCors()`; si quieres cerrarlo
