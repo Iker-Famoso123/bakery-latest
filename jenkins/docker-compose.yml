@@ -12,6 +12,11 @@ services:
     image: rf-jenkins:latest
     container_name: jenkins
     restart: unless-stopped
+    environment:
+      # Zona horaria del contenedor (logs, `date` en los pipelines)…
+      - TZ=America/Mexico_City
+      # …y de la JVM (para que Jenkins muestre las horas en esa zona).
+      - JAVA_OPTS=-Duser.timezone=America/Mexico_City -Dorg.apache.commons.jelly.tags.fmt.timeZone=America/Mexico_City
     ports:
       - '8083:8080' # UI de Jenkins
     volumes:

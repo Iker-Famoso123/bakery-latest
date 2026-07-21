@@ -16,7 +16,7 @@ RUN apt-get update \
  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
-      docker-ce-cli docker-compose-plugin nodejs \
+      docker-ce-cli docker-compose-plugin nodejs tzdata \
  && corepack enable \
  && rm -rf /var/lib/apt/lists/*
 
