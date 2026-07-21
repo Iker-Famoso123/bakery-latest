@@ -1,15 +1,16 @@
 # Despliegue — Repostería Famoso (Raspberry Pi)
 
-Todo se autohospeda en el Pi (`patio`) con Docker Compose, expuesto por
-**Cloudflare Tunnel → Nginx Proxy Manager (NPM)** en tres subdominios:
+Todo se autohospeda en el Pi (`patio`) con Docker Compose. **No se publican
+puertos al host** (evita choques con otros servicios del homelab): NPM alcanza
+los contenedores por nombre a través de una red Docker compartida (`proxy`).
 
-| Subdominio | Servicio | Puerto host |
-|------------|----------|-------------|
-| `reposteriafamoso.com` | Astro (público) | `4321` |
-| `admin.reposteriafamoso.com` | Admin (nginx) | `8080` |
-| `api.reposteriafamoso.com` | NestJS (API) | `3000` |
+| Subdominio | NPM apunta a (nombre:puerto interno) |
+|------------|--------------------------------------|
+| `reposteriafamoso.com` | `rf-public:4321` |
+| `admin.reposteriafamoso.com` | `rf-admin:80` |
+| `api.reposteriafamoso.com` | `rf-api:3000` |
 
-Postgres queda **solo en la red interna** (no se expone al exterior).
+Postgres queda **solo en la red interna** (nunca se expone).
 
 ---
 
@@ -31,6 +32,10 @@ git clone <repo> reposteria && cd reposteria
 cp .env.prod.example .env.prod
 nano .env.prod            # rellena secretos (Postgres, JWT, R2, ADMIN_API_URL)
 
+# Red compartida con NPM (una sola vez):
+docker network create proxy 2>/dev/null || true
+docker network connect proxy <contenedor-de-NPM>   # p. ej. nginx-proxy-manager
+
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
 
@@ -42,24 +47,23 @@ La API aplica las **migraciones** automáticamente al arrancar (`prisma migrate 
 docker compose -f docker-compose.prod.yml exec api pnpm db:seed
 ```
 
-Verifica:
+Verifica (no hay puertos publicados; se comprueba por estado y por dentro):
 
 ```bash
-curl http://localhost:3000/api/health     # {"status":"ok","db":"up",...}
-curl -I http://localhost:4321/            # 200 (público)
-curl -I http://localhost:8080/            # 200 (admin)
+docker compose -f docker-compose.prod.yml ps          # todos "healthy"
+docker exec rf-api node -e "fetch('http://localhost:3000/api/health').then(r=>r.text()).then(console.log)"
 ```
 
 ## 3. Exponer con Cloudflare Tunnel + NPM
 
-1. **Cloudflare Tunnel** (en el Pi o como contenedor `cloudflared`):
-   - Crea un túnel en el dashboard de Cloudflare (Zero Trust → Networks → Tunnels).
-   - Ruta pública: apunta los tres hostnames al **NPM** (p. ej. `http://npm:80` o la IP del Pi).
-2. **Nginx Proxy Manager** → crea un *Proxy Host* por subdominio:
-   - `reposteriafamoso.com` → `rf-public:4321`
-   - `admin.reposteriafamoso.com` → `rf-admin:80`
-   - `api.reposteriafamoso.com` → `rf-api:3000`
-   - Para que NPM alcance los contenedores por nombre, ponlos en la **misma red Docker** que NPM (o usa la IP del Pi + el puerto host de la tabla de arriba).
+1. **Nginx Proxy Manager** → un *Proxy Host* por subdominio (Forward por **nombre de
+   contenedor**, gracias a la red `proxy` compartida):
+   - `reposteriafamoso.com` → `rf-public` : `4321`
+   - `admin.reposteriafamoso.com` → `rf-admin` : `80`
+   - `api.reposteriafamoso.com` → `rf-api` : `3000`
+   - Activa SSL (Let's Encrypt) y "Block Common Exploits" en cada uno.
+2. **Cloudflare Tunnel** (Zero Trust → Networks → Tunnels): agrega los tres
+   *Public Hostnames* apuntando a tu **NPM** (`http://<NPM>:80`). El túnel crea el DNS.
 
 > **CORS:** el admin y la API están en subdominios distintos, así que la API
 > debe permitir el origen del admin. Ya trae `enableCors()`; si quieres cerrarlo
