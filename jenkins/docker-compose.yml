@@ -1,0 +1,26 @@
+# Jenkins en el Pi. Levanta con:
+#   cd jenkins
+#   echo "DOCKER_GID=$(getent group docker | cut -d: -f3)" > .env
+#   docker compose up -d --build
+#
+# UI en http://<ip-del-pi>:8083  (8080/8081/8082 ya están ocupados en tu Pi).
+name: jenkins
+
+services:
+  jenkins:
+    build: .
+    image: rf-jenkins:latest
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - '8083:8080' # UI de Jenkins
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock # despliega en el host
+    group_add:
+      # GID del grupo `docker` del host, para poder usar el socket.
+      # Obtén el número con: getent group docker | cut -d: -f3
+      - '${DOCKER_GID:?define DOCKER_GID en jenkins/.env}'
+
+volumes:
+  jenkins_home:
