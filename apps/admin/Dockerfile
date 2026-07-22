@@ -12,8 +12,7 @@ COPY packages/ui/package.json ./packages/ui/
 COPY apps/api/package.json ./apps/api/
 COPY apps/admin/package.json ./apps/admin/
 COPY apps/public/package.json ./apps/public/
-RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm --filter=@rf/types build \
