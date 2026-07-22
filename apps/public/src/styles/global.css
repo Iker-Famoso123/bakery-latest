@@ -21,6 +21,10 @@
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Figtree Variable', system-ui, -apple-system, sans-serif;
+
+  /* Física de movimiento — curvas estilo iOS (compartidas con el panel) */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out-soft: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 @layer base {
@@ -48,15 +52,28 @@
     outline-offset: 3px;
     border-radius: 4px;
   }
-  /* Realce sutil de las tarjetas compartidas al pasar el cursor */
+  /* Realce físico de las tarjetas compartidas al pasar el cursor */
   a.rf-card {
     transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease;
+      transform 0.35s var(--ease-out-soft),
+      box-shadow 0.35s var(--ease-out-soft);
+  }
+  a.rf-card img {
+    transition: transform 0.6s var(--ease-out-soft);
   }
   @media (prefers-reduced-motion: no-preference) {
     a.rf-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
+      box-shadow:
+        0 2px 4px rgba(59, 42, 36, 0.06),
+        0 18px 40px rgba(59, 42, 36, 0.1);
+    }
+    a.rf-card:hover img {
+      transform: scale(1.04);
+    }
+    a.rf-card:active {
+      transform: translateY(-1px) scale(0.99);
+      transition-duration: 0.15s;
     }
   }
 

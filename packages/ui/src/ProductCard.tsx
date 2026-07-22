@@ -4,6 +4,11 @@ export interface ProductCardProps {
   product: Pick<ProductDto, 'name' | 'slug' | 'description' | 'images'>;
   /** Si es una vista previa (admin), no enlaza a ningún lado. */
   preview?: boolean;
+  /**
+   * Nombre de view transition para la imagen (portal público con Astro
+   * ClientRouter): hace morph de la foto entre la lista y el detalle.
+   */
+  transitionName?: string;
 }
 
 /**
@@ -11,7 +16,7 @@ export interface ProductCardProps {
  * admin. Estilo con variables de marca (--color-*, --font-display) que cada
  * app define, para verse idéntica en ambos lados sin depender de Tailwind.
  */
-export function ProductCard({ product, preview = false }: ProductCardProps) {
+export function ProductCard({ product, preview = false, transitionName }: ProductCardProps) {
   const cover = product.images[0];
   const inner = (
     <>
@@ -22,6 +27,7 @@ export function ProductCard({ product, preview = false }: ProductCardProps) {
           display: 'grid',
           placeItems: 'center',
           overflow: 'hidden',
+          ...(transitionName ? { viewTransitionName: transitionName } : {}),
         }}
       >
         {cover ? (

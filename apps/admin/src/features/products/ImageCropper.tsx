@@ -1,7 +1,7 @@
 import type { ProductImage } from '@rf/types';
 import { useCallback, useEffect, useState } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
-import { IconX } from '../../components/icons';
+import { Modal, ModalActions } from '../../components/Modal';
 import { Button } from '../../components/ui';
 import { ApiError } from '../../lib/api';
 import { toast } from '../../stores/toast';
@@ -51,52 +51,41 @@ export function ImageCropper({ file, onUploaded, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-40 grid place-items-center bg-cafe/50 p-4">
-      <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-crema shadow-xl">
-        <div className="flex items-center justify-between border-b border-linea px-4 py-3">
-          <p className="font-medium text-cafe">Recortar foto</p>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-cafe-suave hover:bg-masa-hondo">
-            <IconX className="size-5" />
-          </button>
-        </div>
-
-        <div className="relative h-72 bg-cafe">
-          {url ? (
-            <Cropper
-              image={url}
-              crop={crop}
-              zoom={zoom}
-              aspect={4 / 3}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-            />
-          ) : null}
-        </div>
-
-        <div className="flex flex-col gap-3 p-4">
-          <label className="flex items-center gap-3 text-sm text-cafe-suave">
-            Zoom
-            <input
-              type="range"
-              min={1}
-              max={3}
-              step={0.05}
-              value={zoom}
-              onChange={(e) => setZoom(Number(e.target.value))}
-              className="flex-1 accent-[var(--color-concha)]"
-            />
-          </label>
-          <div className="flex items-center justify-end gap-2">
-            <Button variant="ghost" onClick={onClose} type="button">
-              Cancelar
-            </Button>
-            <Button onClick={handleUpload} disabled={upload.isPending || !area} type="button">
-              {upload.isPending ? 'Subiendo…' : 'Usar foto'}
-            </Button>
-          </div>
-        </div>
+    <Modal open onClose={onClose} title="Recortar foto" size="lg" locked={upload.isPending}>
+      <div className="relative h-72 touch-none bg-cafe">
+        {url ? (
+          <Cropper
+            image={url}
+            crop={crop}
+            zoom={zoom}
+            aspect={4 / 3}
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={onCropComplete}
+          />
+        ) : null}
       </div>
-    </div>
+
+      <label className="flex items-center gap-3 px-5 pb-2 pt-4 text-sm text-cafe-suave">
+        Zoom
+        <input
+          type="range"
+          min={1}
+          max={3}
+          step={0.05}
+          value={zoom}
+          onChange={(e) => setZoom(Number(e.target.value))}
+          className="flex-1 accent-[var(--color-concha)]"
+        />
+      </label>
+      <ModalActions>
+        <Button variant="ghost" onClick={onClose} type="button" disabled={upload.isPending}>
+          Cancelar
+        </Button>
+        <Button onClick={handleUpload} disabled={upload.isPending || !area} type="button">
+          {upload.isPending ? 'Subiendo…' : 'Usar foto'}
+        </Button>
+      </ModalActions>
+    </Modal>
   );
 }

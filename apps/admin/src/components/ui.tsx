@@ -28,7 +28,9 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition',
+        'inline-flex items-center justify-center gap-2 rounded-lg font-medium',
+        'transition-[background-color,border-color,color,transform,box-shadow,filter] duration-200 [transition-timing-function:var(--ease-out-soft)]',
+        'active:scale-[0.97] motion-reduce:active:scale-100',
         'disabled:pointer-events-none disabled:opacity-50',
         VARIANTS[variant],
         SIZES[size],

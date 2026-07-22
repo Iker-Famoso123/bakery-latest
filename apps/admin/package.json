@@ -11,6 +11,7 @@
     "lint": "echo \"no lint\" && exit 0"
   },
   "dependencies": {
+    "@base-ui/react": "^1.6.0",
     "@fontsource-variable/figtree": "^5.1.0",
     "@fontsource-variable/fraunces": "^5.1.0",
     "@rf/types": "workspace:*",
@@ -20,6 +21,7 @@
     "@tiptap/react": "^2.10.0",
     "@tiptap/starter-kit": "^2.10.0",
     "luxon": "^3.5.0",
+    "motion": "^12.42.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-easy-crop": "^5.2.0",

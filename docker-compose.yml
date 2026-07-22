@@ -1,8 +1,10 @@
-# Fase 1: solo Postgres. La API y Astro se añaden en la Fase 5 (deploy).
+# Desarrollo local: solo Postgres. La API y los frontends corren con pnpm dev.
+# Nombre distinto al de prod (rf-postgres) para poder tener ambos stacks
+# en la misma máquina sin choque de container_name.
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: rf-postgres
+    container_name: rf-postgres-dev
     restart: unless-stopped
     environment:
       POSTGRES_USER: clu

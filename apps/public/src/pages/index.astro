@@ -20,7 +20,7 @@ const posts = (
     <Concha
       class="pointer-events-none absolute -bottom-24 -right-12 size-72 text-costra-tenue"
     />
-    <div class="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32">
+    <div class="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32" data-reveal="group">
       <p class="text-xs font-semibold uppercase tracking-[0.18em] text-concha-hondo">
         Panadería artesanal
       </p>
@@ -58,9 +58,9 @@ const posts = (
     </div>
     {
       products.length > 0 ? (
-        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="group">
           {products.map((product) => (
-            <ProductCard product={product} />
+            <ProductCard product={product} transitionName={`pan-${product.slug}`} />
           ))}
         </div>
       ) : (
@@ -81,9 +81,9 @@ const posts = (
             Ver el blog →
           </a>
         </div>
-        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal="group">
           {posts.map((post) => (
-            <PostCard post={post} />
+            <PostCard post={post} transitionName={`post-${post.slug}`} />
           ))}
         </div>
       </section>

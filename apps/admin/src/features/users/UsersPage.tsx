@@ -1,6 +1,7 @@
 import type { Role, UserDto } from '@rf/types';
 import { type FormEvent, useState } from 'react';
-import { IconPlus, IconX } from '../../components/icons';
+import { IconPlus } from '../../components/icons';
+import { Modal, ModalActions, ModalBody } from '../../components/Modal';
 import {
   Button,
   Card,
@@ -47,7 +48,7 @@ export function UsersPage() {
         </Card>
       )}
 
-      {creating ? <CreateUserModal onClose={() => setCreating(false)} /> : null}
+      <CreateUserModal open={creating} onClose={() => setCreating(false)} />
     </>
   );
 }
@@ -76,9 +77,16 @@ function UserRow({ user }: { user: UserDto }) {
           {user.name} {isSelf ? <span className="text-xs text-tenue">(tú)</span> : null}
         </p>
         <p className="truncate text-sm text-tenue">{user.email}</p>
+        {/* En pantallas chicas los chips bajan aquí para no comerse el nombre */}
+        <div className="mt-1 flex gap-1.5 sm:hidden">
+          <Chip tone={user.role === 'admin' ? 'concha' : 'costra'}>{user.role}</Chip>
+          {user.active ? <Chip tone="exito">Activo</Chip> : <Chip tone="neutral">Inactivo</Chip>}
+        </div>
       </div>
-      <Chip tone={user.role === 'admin' ? 'concha' : 'costra'}>{user.role}</Chip>
-      {user.active ? <Chip tone="exito">Activo</Chip> : <Chip tone="neutral">Inactivo</Chip>}
+      <div className="hidden items-center gap-1.5 sm:flex">
+        <Chip tone={user.role === 'admin' ? 'concha' : 'costra'}>{user.role}</Chip>
+        {user.active ? <Chip tone="exito">Activo</Chip> : <Chip tone="neutral">Inactivo</Chip>}
+      </div>
       <Button
         variant="secondary"
         size="sm"
@@ -92,18 +100,26 @@ function UserRow({ user }: { user: UserDto }) {
   );
 }
 
-function CreateUserModal({ onClose }: { onClose: () => void }) {
+function CreateUserModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const create = useCreateUser();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<Role>('editor');
 
+  function reset() {
+    setEmail('');
+    setName('');
+    setPassword('');
+    setRole('editor');
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     try {
       await create.mutateAsync({ email, name, password, role });
       toast.ok('Usuario creado');
+      reset();
       onClose();
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'No se pudo crear');
@@ -111,15 +127,9 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-40 grid place-items-center bg-cafe/50 p-4">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl bg-crema shadow-xl">
-        <div className="flex items-center justify-between border-b border-linea px-4 py-3">
-          <p className="font-medium text-cafe">Nuevo usuario</p>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-cafe-suave hover:bg-masa-hondo">
-            <IconX className="size-5" />
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+    <Modal open={open} onClose={onClose} title="Nuevo usuario" locked={create.isPending}>
+      <form onSubmit={handleSubmit}>
+        <ModalBody className="flex flex-col gap-4">
           <Field label="Nombre">
             <Input value={name} onChange={(e) => setName(e.target.value)} required autoFocus />
           </Field>
@@ -146,16 +156,16 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
               <option value="admin">Administrador (todo, incluye usuarios)</option>
             </Select>
           </Field>
-          <div className="flex justify-end gap-2 pt-1">
-            <Button type="button" variant="ghost" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button type="submit" disabled={create.isPending}>
-              {create.isPending ? 'Creando…' : 'Crear usuario'}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </ModalBody>
+        <ModalActions>
+          <Button type="button" variant="ghost" onClick={onClose} disabled={create.isPending}>
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={create.isPending}>
+            {create.isPending ? 'Creando…' : 'Crear usuario'}
+          </Button>
+        </ModalActions>
+      </form>
+    </Modal>
   );
 }

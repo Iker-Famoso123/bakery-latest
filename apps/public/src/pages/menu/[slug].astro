@@ -25,7 +25,10 @@ const ingredientes = product?.details.ingredientes ?? [];
           ← Volver al menú
         </a>
         <div class="mt-4 grid gap-8 sm:grid-cols-2">
-          <div class="overflow-hidden rounded-2xl border border-linea bg-masa-hondo">
+          <div
+            class="overflow-hidden rounded-2xl border border-linea bg-masa-hondo"
+            transition:name={`pan-${product.slug}`}
+          >
             {product.images[0] ? (
               <img
                 src={product.images[0].full}

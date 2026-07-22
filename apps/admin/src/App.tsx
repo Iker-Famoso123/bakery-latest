@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router';
 import { LoginPage } from './auth/LoginPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
 import { ConchaMark } from './components/Brand';
+import { ConfirmHost } from './components/ConfirmDialog';
 import { Layout } from './components/Layout';
 import { Toaster } from './components/Toaster';
 import { Spinner } from './components/ui';
@@ -54,6 +55,7 @@ export function App() {
         </Route>
         <Route path="*" element={<Navigate to="/avisos" replace />} />
       </Routes>
+      <ConfirmHost />
       <Toaster />
     </>
   );

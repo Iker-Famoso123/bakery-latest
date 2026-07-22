@@ -1,6 +1,7 @@
 import type { PostDto } from '@rf/types';
 import { fromISO, now } from '@rf/types';
 import { Link } from 'react-router';
+import { confirm } from '../../components/ConfirmDialog';
 import { IconEdit, IconInfinity, IconPin, IconPlus, IconTrash } from '../../components/icons';
 import { Button, Card, Chip, EmptyState, PageHeader, Spinner } from '../../components/ui';
 import { formatDate } from '../../lib/dates';
@@ -18,7 +19,13 @@ export function PostsListPage() {
   const del = useDeletePost();
 
   async function handleDelete(post: PostDto) {
-    if (!window.confirm(`¿Eliminar el aviso "${post.title}"?`)) return;
+    const ok = await confirm({
+      title: '¿Eliminar este aviso?',
+      message: `"${post.title}" desaparecerá del sitio público. Esta acción no se puede deshacer.`,
+      confirmLabel: 'Eliminar',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await del.mutateAsync(post.id);
       toast.ok('Aviso eliminado');

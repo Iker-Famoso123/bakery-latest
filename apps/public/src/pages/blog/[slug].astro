@@ -31,6 +31,7 @@ const excerpt = html.replace(/<[^>]+>/g, '').slice(0, 155).trim();
             src={post.coverImage}
             alt={post.title}
             class="mt-6 w-full rounded-2xl border border-linea object-cover"
+            transition:name={`post-${post.slug}`}
           />
         ) : null}
         <div class="prosa mt-8" set:html={html} />

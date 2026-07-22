@@ -1,5 +1,6 @@
 import type { ProductDto } from '@rf/types';
 import { Link } from 'react-router';
+import { confirm } from '../../components/ConfirmDialog';
 import { IconEdit, IconPlus, IconTrash } from '../../components/icons';
 import { Button, Card, Chip, EmptyState, PageHeader, Spinner } from '../../components/ui';
 import { toast } from '../../stores/toast';
@@ -24,7 +25,13 @@ export function ProductsListPage() {
   }
 
   async function handleDelete(product: ProductDto) {
-    if (!window.confirm(`¿Eliminar "${product.name}" del menú?`)) return;
+    const ok = await confirm({
+      title: '¿Eliminar este pan?',
+      message: `"${product.name}" se quitará del menú público, junto con sus fotos.`,
+      confirmLabel: 'Eliminar',
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await del.mutateAsync(product.id);
       toast.ok('Pan eliminado');

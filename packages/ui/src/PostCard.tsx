@@ -4,13 +4,18 @@ import { toMexico } from '@rf/types';
 export interface PostCardProps {
   post: Pick<PostDto, 'title' | 'slug' | 'coverImage' | 'publishAt' | 'pinned'>;
   preview?: boolean;
+  /**
+   * Nombre de view transition para la portada (portal público con Astro
+   * ClientRouter): hace morph de la imagen entre la lista y el detalle.
+   */
+  transitionName?: string;
 }
 
 /**
  * Tarjeta de aviso/entrada compartida entre el portal público y la vista
  * previa del admin. Estilo con variables de marca; sin dependencias de Tailwind.
  */
-export function PostCard({ post, preview = false }: PostCardProps) {
+export function PostCard({ post, preview = false, transitionName }: PostCardProps) {
   const fecha = toMexico(post.publishAt).setLocale('es').toFormat("d 'de' LLLL yyyy");
 
   const inner = (
@@ -22,6 +27,7 @@ export function PostCard({ post, preview = false }: PostCardProps) {
           display: 'grid',
           placeItems: 'center',
           overflow: 'hidden',
+          ...(transitionName ? { viewTransitionName: transitionName } : {}),
         }}
       >
         {post.coverImage ? (

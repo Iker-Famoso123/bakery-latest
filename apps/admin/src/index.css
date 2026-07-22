@@ -27,6 +27,10 @@
   --font-sans: 'Figtree Variable', system-ui, -apple-system, sans-serif;
 
   --radius-etiqueta: 0.5rem;
+
+  /* Física de movimiento — curvas estilo iOS */
+  --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1); /* sheets y desplazamientos */
+  --ease-out-soft: cubic-bezier(0.25, 1, 0.5, 1); /* micro-interacciones */
 }
 
 @layer base {
@@ -78,7 +82,7 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .anim-rise {
-    animation: rise 0.4s ease both;
+    animation: rise 0.45s var(--ease-out-soft) both;
   }
   @keyframes rise {
     from {
