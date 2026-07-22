@@ -25,6 +25,8 @@ pipeline {
       steps {
         sh 'corepack enable'
         sh 'pnpm install --frozen-lockfile'
+        // El typecheck de la API usa los tipos de @prisma/client → hay que generarlo.
+        sh 'pnpm --filter @rf/api exec prisma generate'
         sh 'pnpm typecheck'
       }
     }
