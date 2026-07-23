@@ -5,7 +5,9 @@ import { ApiError } from '../../lib/api';
 import { toast } from '../../stores/toast';
 import { useSaveSettings, useSettings, type SettingsInput } from './api';
 import { HorariosEditor } from './HorariosEditor';
+import type { Coords } from './maps-url';
 import { SocialLinksEditor } from './SocialLinksEditor';
+import { UbicacionEditor } from './UbicacionEditor';
 
 export function SettingsPage() {
   const { data, isLoading } = useSettings();
@@ -24,8 +26,11 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
   const [whatsapp, setWhatsapp] = useState(settings?.whatsapp ?? '');
   const [telefono, setTelefono] = useState(settings?.telefono ?? '');
   const [direccion, setDireccion] = useState(settings?.direccion ?? '');
-  const [lat, setLat] = useState(settings?.lat != null ? String(settings.lat) : '');
-  const [lng, setLng] = useState(settings?.lng != null ? String(settings.lng) : '');
+  const [coords, setCoords] = useState<Coords | null>(
+    settings?.lat != null && settings?.lng != null
+      ? { lat: settings.lat, lng: settings.lng }
+      : null,
+  );
   const [redes, setRedes] = useState<SocialLink[]>(settings?.redes ?? []);
   const [horarios, setHorarios] = useState<Horario[]>(settings?.horarios ?? []);
 
@@ -35,8 +40,8 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
       whatsapp: whatsapp.trim() || null,
       telefono: telefono.trim() || null,
       direccion: direccion.trim() || null,
-      lat: lat ? Number(lat) : null,
-      lng: lng ? Number(lng) : null,
+      lat: coords?.lat ?? null,
+      lng: coords?.lng ?? null,
       // Los editores ya entregan filas completas y limpias.
       redes,
       horarios,
@@ -66,14 +71,7 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
           <Field label="Dirección">
             <Input value={direccion} onChange={(e) => setDireccion(e.target.value)} />
           </Field>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Latitud" hint="Para el mapa. Opcional.">
-              <Input value={lat} onChange={(e) => setLat(e.target.value)} placeholder="20.6597" />
-            </Field>
-            <Field label="Longitud">
-              <Input value={lng} onChange={(e) => setLng(e.target.value)} placeholder="-103.3496" />
-            </Field>
-          </div>
+          <UbicacionEditor initial={coords} onChange={setCoords} />
         </Card>
 
         {/* Redes sociales — predeterminadas con icono, vía picker */}

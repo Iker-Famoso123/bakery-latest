@@ -1,4 +1,10 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+
+export class ExpandMapsUrlDto {
+  /** Enlace corto de Google Maps (p. ej. https://maps.app.goo.gl/…). */
+  @IsUrl({ protocols: ['https'], require_protocol: true })
+  url!: string;
+}
 
 export class UpdateSettingsDto {
   @IsOptional() @IsString() whatsapp?: string | null;

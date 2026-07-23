@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import type { SettingsDto } from '@rf/types';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
-import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { ExpandMapsUrlDto, UpdateSettingsDto } from './dto/update-settings.dto';
 import { SettingsService } from './settings.service';
 
 @Controller()
@@ -21,5 +21,12 @@ export class SettingsController {
   @Put('settings')
   update(@Body() dto: UpdateSettingsDto): Promise<SettingsDto> {
     return this.settings.update(dto);
+  }
+
+  /** Expande un enlace corto de Google Maps para extraer coordenadas. */
+  @Roles('admin')
+  @Post('settings/maps-url')
+  expandMapsUrl(@Body() dto: ExpandMapsUrlDto): Promise<{ url: string }> {
+    return this.settings.expandMapsUrl(dto.url);
   }
 }
