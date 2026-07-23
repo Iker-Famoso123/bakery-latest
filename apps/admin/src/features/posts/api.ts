@@ -5,6 +5,7 @@ import { apiDelete, apiGet, apiPatch, apiPost } from '../../lib/api';
 export interface PostInput {
   title: string;
   body: Record<string, unknown>;
+  coverImage: string | null;
   status: PostStatus;
   publishAt: string;
   expiresAt: string | null;
