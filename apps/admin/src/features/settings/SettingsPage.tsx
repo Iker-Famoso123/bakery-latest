@@ -5,6 +5,7 @@ import { Button, Card, Field, Input, PageHeader, Spinner } from '../../component
 import { ApiError } from '../../lib/api';
 import { toast } from '../../stores/toast';
 import { useSaveSettings, useSettings, type SettingsInput } from './api';
+import { HorariosEditor } from './HorariosEditor';
 
 export function SettingsPage() {
   const { data, isLoading } = useSettings();
@@ -37,7 +38,8 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
       lat: lat ? Number(lat) : null,
       lng: lng ? Number(lng) : null,
       redes: redes.filter((r) => r.tipo.trim() && r.url.trim()),
-      horarios: horarios.filter((h) => h.dia.trim()),
+      // El editor ya entrega filas completas y limpias.
+      horarios,
     };
     try {
       await save.mutateAsync(input);
@@ -113,60 +115,9 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
           )}
         </Card>
 
-        {/* Horarios */}
-        <Card className="flex flex-col gap-3 p-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-cafe">Horarios</h2>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() =>
-                setHorarios((h) => [...h, { dia: '', apertura: '08:00', cierre: '20:00' }])
-              }
-            >
-              <IconPlus className="size-4" /> Agregar
-            </Button>
-          </div>
-          {horarios.length === 0 ? (
-            <p className="text-sm text-tenue">Sin horarios todavía.</p>
-          ) : (
-            horarios.map((h, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input
-                  className="flex-1"
-                  placeholder="Lunes a viernes"
-                  value={h.dia}
-                  onChange={(e) =>
-                    setHorarios((hs) =>
-                      hs.map((x, j) => (j === i ? { ...x, dia: e.target.value } : x)),
-                    )
-                  }
-                />
-                <Input
-                  type="time"
-                  className="w-32"
-                  value={h.apertura}
-                  onChange={(e) =>
-                    setHorarios((hs) =>
-                      hs.map((x, j) => (j === i ? { ...x, apertura: e.target.value } : x)),
-                    )
-                  }
-                />
-                <Input
-                  type="time"
-                  className="w-32"
-                  value={h.cierre}
-                  onChange={(e) =>
-                    setHorarios((hs) =>
-                      hs.map((x, j) => (j === i ? { ...x, cierre: e.target.value } : x)),
-                    )
-                  }
-                />
-                <RemoveButton onClick={() => setHorarios((hs) => hs.filter((_, j) => j !== i))} />
-              </div>
-            ))
-          )}
+        {/* Horarios — días flexibles con chips + rango de horas */}
+        <Card className="p-5">
+          <HorariosEditor initial={settings?.horarios ?? []} onChange={setHorarios} />
         </Card>
 
         <div>
