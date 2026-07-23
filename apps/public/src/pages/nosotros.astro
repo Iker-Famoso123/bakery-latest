@@ -1,4 +1,5 @@
 ---
+import { SocialIcon } from '@rf/ui';
 import Layout from '../layouts/Layout.astro';
 import { getSettings, safe } from '../lib/api';
 import { mapsLink, whatsappLink } from '../lib/format';
@@ -76,10 +77,11 @@ const hasCoords = settings?.lat != null && settings?.lng != null;
                 {settings.redes.map((red) => (
                   <li>
                     <a
-                      class="rounded-full bg-concha-tenue px-3 py-1 text-sm font-medium text-concha-hondo hover:bg-concha hover:text-white"
+                      class="inline-flex items-center gap-1.5 rounded-full bg-concha-tenue px-3 py-1.5 text-sm font-medium text-concha-hondo transition-colors duration-200 hover:bg-concha hover:text-white"
                       href={red.url}
                       rel="noopener noreferrer"
                     >
+                      <SocialIcon tipo={red.tipo} size={15} />
                       {red.tipo}
                     </a>
                   </li>

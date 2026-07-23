@@ -1,11 +1,11 @@
 import type { Horario, SettingsDto, SocialLink } from '@rf/types';
 import { type FormEvent, useState } from 'react';
-import { IconPlus, IconX } from '../../components/icons';
 import { Button, Card, Field, Input, PageHeader, Spinner } from '../../components/ui';
 import { ApiError } from '../../lib/api';
 import { toast } from '../../stores/toast';
 import { useSaveSettings, useSettings, type SettingsInput } from './api';
 import { HorariosEditor } from './HorariosEditor';
+import { SocialLinksEditor } from './SocialLinksEditor';
 
 export function SettingsPage() {
   const { data, isLoading } = useSettings();
@@ -37,8 +37,8 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
       direccion: direccion.trim() || null,
       lat: lat ? Number(lat) : null,
       lng: lng ? Number(lng) : null,
-      redes: redes.filter((r) => r.tipo.trim() && r.url.trim()),
-      // El editor ya entrega filas completas y limpias.
+      // Los editores ya entregan filas completas y limpias.
+      redes,
       horarios,
     };
     try {
@@ -76,43 +76,9 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
           </div>
         </Card>
 
-        {/* Redes sociales */}
-        <Card className="flex flex-col gap-3 p-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-cafe">Redes sociales</h2>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => setRedes((r) => [...r, { tipo: '', url: '' }])}
-            >
-              <IconPlus className="size-4" /> Agregar
-            </Button>
-          </div>
-          {redes.length === 0 ? (
-            <p className="text-sm text-tenue">Sin redes todavía.</p>
-          ) : (
-            redes.map((red, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Input
-                  className="w-40"
-                  placeholder="Facebook"
-                  value={red.tipo}
-                  onChange={(e) =>
-                    setRedes((r) => r.map((x, j) => (j === i ? { ...x, tipo: e.target.value } : x)))
-                  }
-                />
-                <Input
-                  placeholder="https://…"
-                  value={red.url}
-                  onChange={(e) =>
-                    setRedes((r) => r.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))
-                  }
-                />
-                <RemoveButton onClick={() => setRedes((r) => r.filter((_, j) => j !== i))} />
-              </div>
-            ))
-          )}
+        {/* Redes sociales — predeterminadas con icono, vía picker */}
+        <Card className="p-5">
+          <SocialLinksEditor initial={settings?.redes ?? []} onChange={setRedes} />
         </Card>
 
         {/* Horarios — días flexibles con chips + rango de horas */}
@@ -130,15 +96,3 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
   );
 }
 
-function RemoveButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="rounded-lg p-2 text-cafe-suave hover:bg-peligro-tenue hover:text-peligro"
-      aria-label="Quitar"
-    >
-      <IconX className="size-5" />
-    </button>
-  );
-}

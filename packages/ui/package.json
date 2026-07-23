@@ -15,7 +15,8 @@
     "react-dom": "^19.0.0"
   },
   "dependencies": {
-    "@rf/types": "workspace:*"
+    "@rf/types": "workspace:*",
+    "simple-icons": "^16.27.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",
