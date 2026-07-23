@@ -1,20 +1,24 @@
 import type { ProductImage } from '@rf/types';
 import { useCallback, useEffect, useState } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
-import { Modal, ModalActions } from '../../components/Modal';
-import { Button } from '../../components/ui';
-import { ApiError } from '../../lib/api';
-import { toast } from '../../stores/toast';
-import { useUploadImage } from './api';
+import { ApiError } from '../lib/api';
+import { useUploadImage } from '../lib/media';
+import { toast } from '../stores/toast';
+import { Modal, ModalActions } from './Modal';
+import { Button } from './ui';
 
 interface Props {
   file: File;
+  /** Proporción del recorte: 4/3 para panes, 16/9 para portadas de avisos. */
+  aspect: number;
+  /** Carpeta destino en R2 (p. ej. 'products' o 'posts'). */
+  folder: string;
   onUploaded: (image: ProductImage) => void;
   onClose: () => void;
 }
 
 /** Modal de recorte: el usuario ajusta el encuadre y se sube a R2 vía la API. */
-export function ImageCropper({ file, onUploaded, onClose }: Props) {
+export function ImageCropper({ file, aspect, folder, onUploaded, onClose }: Props) {
   const [url, setUrl] = useState<string>('');
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -37,6 +41,7 @@ export function ImageCropper({ file, onUploaded, onClose }: Props) {
       const image = await upload.mutateAsync({
         file,
         crop: { x: area.x, y: area.y, width: area.width, height: area.height },
+        folder,
       });
       toast.ok('Foto subida');
       onUploaded(image);
@@ -58,7 +63,7 @@ export function ImageCropper({ file, onUploaded, onClose }: Props) {
             image={url}
             crop={crop}
             zoom={zoom}
-            aspect={4 / 3}
+            aspect={aspect}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}

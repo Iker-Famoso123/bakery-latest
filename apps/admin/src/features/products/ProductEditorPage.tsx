@@ -3,11 +3,11 @@ import { ProductCard } from '@rf/ui';
 import { type FormEvent, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { IconPlus, IconX } from '../../components/icons';
+import { ImageCropper } from '../../components/ImageCropper';
 import { Button, Card, Field, Input, PageHeader, Spinner, Textarea } from '../../components/ui';
 import { ApiError } from '../../lib/api';
 import { toast } from '../../stores/toast';
 import { useProduct, useSaveProduct, type ProductInput } from './api';
-import { ImageCropper } from './ImageCropper';
 
 export function ProductEditorPage() {
   const { id } = useParams();
@@ -200,6 +200,8 @@ function ProductForm({ product }: { product?: ProductDto }) {
       {pendingFile ? (
         <ImageCropper
           file={pendingFile}
+          aspect={4 / 3}
+          folder="products"
           onUploaded={(img) => setImages((prev) => [...prev, img])}
           onClose={() => setPendingFile(null)}
         />

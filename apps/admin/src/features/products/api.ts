@@ -1,6 +1,6 @@
 import type { ProductDto, ProductImage } from '@rf/types';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiDelete, apiGet, apiPatch, apiPost, apiUpload } from '../../lib/api';
+import { apiDelete, apiGet, apiPatch, apiPost } from '../../lib/api';
 
 export interface ProductInput {
   name: string;
@@ -51,21 +51,4 @@ export function useReorderProducts() {
   });
 }
 
-export interface CropArea {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-export function useUploadImage() {
-  return useMutation({
-    mutationFn: ({ file, crop }: { file: File; crop: CropArea }) => {
-      const form = new FormData();
-      form.append('file', file);
-      form.append('crop', JSON.stringify(crop));
-      form.append('folder', 'products');
-      return apiUpload<ProductImage>('/media/upload', form);
-    },
-  });
-}
+// El upload de imágenes vive en src/lib/media.ts (compartido con avisos).
