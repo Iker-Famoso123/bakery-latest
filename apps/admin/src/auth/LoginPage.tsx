@@ -35,11 +35,11 @@ export function LoginPage() {
     <div className="grid min-h-screen place-items-center px-4">
       <div className="anim-rise w-full max-w-sm">
         <div className="overflow-hidden rounded-3xl border border-linea bg-crema shadow-lg">
-          {/* Banda de marca: variante formal del logotipo sobre chocolate */}
-          <div className="flex flex-col items-center gap-3 bg-chocolate px-8 py-9 text-center">
+          {/* Banda de marca: variante formal del logotipo sobre café espresso */}
+          <div className="flex flex-col items-center gap-3 bg-cafe px-8 py-9 text-center">
             <CroissantRosa className="h-16" />
             <div>
-              <p className="font-display text-2xl leading-tight text-white">Repostería Famoso</p>
+              <p className="font-display text-2xl leading-tight text-masa">Repostería Famoso</p>
               <p className="mt-1 text-sm text-rosa-logo/90">Panel de administración · desde 1960</p>
             </div>
           </div>

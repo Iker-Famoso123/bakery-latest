@@ -19,9 +19,8 @@
   --color-costra: #b27a3e;
   --color-costra-tenue: #f4e8d6;
 
-  /* Colores del logotipo formal */
-  --color-chocolate: #2e0d14; /* fondo de la variante oscura */
-  --color-rosa-logo: #f2a9bd; /* trazo rosa de la variante oscura */
+  /* Acento del logotipo formal sobre superficies oscuras (café) */
+  --color-rosa-logo: #f2a9bd;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Figtree Variable', system-ui, -apple-system, sans-serif;

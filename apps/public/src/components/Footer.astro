@@ -11,8 +11,8 @@ const { settings } = Astro.props;
 const year = now().year;
 ---
 
-<!-- Cierre formal: la variante oscura del logotipo sobre chocolate de marca -->
-<footer class="mt-16 bg-chocolate text-white/70">
+<!-- Cierre formal: la variante oscura del logotipo sobre café espresso -->
+<footer class="mt-16 bg-cafe text-masa/75">
   <div class="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:grid-cols-3">
     <div>
       <img
@@ -34,7 +34,7 @@ const year = now().year;
             {settings.whatsapp ? (
               <li>
                 <a
-                  class="transition-colors duration-200 hover:text-white"
+                  class="transition-colors duration-200 hover:text-crema"
                   href={whatsappLink(settings.whatsapp)}
                 >
                   WhatsApp: {settings.whatsapp}
@@ -56,7 +56,7 @@ const year = now().year;
             {settings.redes.map((red) => (
               <li>
                 <a
-                  class="inline-flex items-center gap-2 transition-colors duration-200 hover:text-white"
+                  class="inline-flex items-center gap-2 transition-colors duration-200 hover:text-crema"
                   href={red.url}
                   rel="noopener noreferrer"
                 >
@@ -71,7 +71,7 @@ const year = now().year;
     }
   </div>
 
-  <div class="border-t border-white/10 py-4 text-center text-xs text-white/50">
+  <div class="border-t border-masa/15 py-4 text-center text-xs text-masa/50">
     © {year} Repostería Famoso · Desde 1960
   </div>
 </footer>
