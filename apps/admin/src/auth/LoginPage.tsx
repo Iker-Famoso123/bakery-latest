@@ -1,7 +1,7 @@
 import type { AuthResponse } from '@rf/types';
 import { type FormEvent, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router';
-import { ConchaMark } from '../components/Brand';
+import { CroissantRosa } from '../components/Brand';
 import { Button, Field, Input } from '../components/ui';
 import { ApiError, apiPost } from '../lib/api';
 import { useAuthStore } from '../stores/auth';
@@ -35,12 +35,12 @@ export function LoginPage() {
     <div className="grid min-h-screen place-items-center px-4">
       <div className="anim-rise w-full max-w-sm">
         <div className="overflow-hidden rounded-3xl border border-linea bg-crema shadow-lg">
-          {/* Banda de marca */}
-          <div className="flex flex-col items-center gap-3 bg-concha px-8 py-9 text-center">
-            <ConchaMark className="size-14 text-white" />
+          {/* Banda de marca: variante formal del logotipo sobre chocolate */}
+          <div className="flex flex-col items-center gap-3 bg-chocolate px-8 py-9 text-center">
+            <CroissantRosa className="h-16" />
             <div>
               <p className="font-display text-2xl leading-tight text-white">Repostería Famoso</p>
-              <p className="mt-1 text-sm text-white/80">Panel de administración</p>
+              <p className="mt-1 text-sm text-rosa-logo/90">Panel de administración · desde 1960</p>
             </div>
           </div>
 

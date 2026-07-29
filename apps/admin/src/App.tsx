@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 import { LoginPage } from './auth/LoginPage';
 import { ProtectedRoute } from './auth/ProtectedRoute';
-import { ConchaMark } from './components/Brand';
+import { CroissantMark } from './components/Brand';
 import { ConfirmHost } from './components/ConfirmDialog';
 import { Layout } from './components/Layout';
 import { Toaster } from './components/Toaster';
@@ -27,7 +27,7 @@ export function App() {
     return (
       <div className="grid min-h-screen place-items-center">
         <div className="flex flex-col items-center gap-3 text-concha">
-          <ConchaMark className="size-10" />
+          <CroissantMark className="h-10" />
           <Spinner className="size-5" />
         </div>
       </div>

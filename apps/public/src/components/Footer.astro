@@ -1,6 +1,7 @@
 ---
 import type { SettingsDto } from '@rf/types';
 import { now } from '@rf/types';
+import { SocialIcon } from '@rf/ui';
 import { whatsappLink } from '../lib/format';
 
 interface Props {
@@ -10,21 +11,32 @@ const { settings } = Astro.props;
 const year = now().year;
 ---
 
-<footer class="mt-16 border-t border-linea bg-masa-hondo/40">
-  <div class="mx-auto grid max-w-5xl gap-8 px-5 py-12 sm:grid-cols-3">
+<!-- Cierre formal: la variante oscura del logotipo sobre chocolate de marca -->
+<footer class="mt-16 bg-chocolate text-white/70">
+  <div class="mx-auto grid max-w-5xl gap-10 px-5 py-14 sm:grid-cols-3">
     <div>
-      <p class="font-display text-lg text-cafe">Repostería Famoso</p>
-      <p class="mt-1 text-sm text-cafe-suave">Pan dulce y repostería, hecho en casa.</p>
+      <img
+        src="/brand/logo-oscuro.png"
+        alt="Repostería Famoso, desde 1960"
+        class="w-44 max-w-full"
+        width="1000"
+        height="752"
+        loading="lazy"
+      />
+      <p class="mt-4 text-sm">Pan dulce y repostería, hecho en casa.</p>
     </div>
 
     {
       settings && (settings.whatsapp || settings.telefono || settings.direccion) ? (
         <div class="text-sm">
-          <p class="mb-2 font-semibold text-cafe">Contacto</p>
-          <ul class="flex flex-col gap-1 text-cafe-suave">
+          <p class="mb-3 font-semibold text-rosa-logo">Contacto</p>
+          <ul class="flex flex-col gap-1.5">
             {settings.whatsapp ? (
               <li>
-                <a class="hover:text-concha-hondo" href={whatsappLink(settings.whatsapp)}>
+                <a
+                  class="transition-colors duration-200 hover:text-white"
+                  href={whatsappLink(settings.whatsapp)}
+                >
                   WhatsApp: {settings.whatsapp}
                 </a>
               </li>
@@ -39,11 +51,16 @@ const year = now().year;
     {
       settings && settings.redes.length > 0 ? (
         <div class="text-sm">
-          <p class="mb-2 font-semibold text-cafe">Síguenos</p>
-          <ul class="flex flex-col gap-1 text-cafe-suave">
+          <p class="mb-3 font-semibold text-rosa-logo">Síguenos</p>
+          <ul class="flex flex-col gap-1.5">
             {settings.redes.map((red) => (
               <li>
-                <a class="hover:text-concha-hondo" href={red.url} rel="noopener noreferrer">
+                <a
+                  class="inline-flex items-center gap-2 transition-colors duration-200 hover:text-white"
+                  href={red.url}
+                  rel="noopener noreferrer"
+                >
+                  <SocialIcon tipo={red.tipo} size={14} />
                   {red.tipo}
                 </a>
               </li>
@@ -54,7 +71,7 @@ const year = now().year;
     }
   </div>
 
-  <div class="border-t border-linea py-4 text-center text-xs text-tenue">
-    © {year} Repostería Famoso
+  <div class="border-t border-white/10 py-4 text-center text-xs text-white/50">
+    © {year} Repostería Famoso · Desde 1960
   </div>
 </footer>

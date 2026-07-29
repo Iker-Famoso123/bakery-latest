@@ -1,6 +1,5 @@
 ---
 import { PostCard, ProductCard } from '@rf/ui';
-import Concha from '../components/Concha.astro';
 import Layout from '../layouts/Layout.astro';
 import { getPosts, getProducts, safe } from '../lib/api';
 
@@ -14,15 +13,21 @@ const posts = (
   title="Repostería Famoso"
   description="Panadería y repostería artesanal. Descubre nuestro pan dulce, el menú del día y los últimos avisos."
 >
-  <!-- Hero -->
+  <!-- Hero: el croissant del logotipo asoma como decoración de marca -->
   <section class="relative overflow-hidden border-b border-linea">
-    <Concha class="pointer-events-none absolute -left-16 -top-10 size-64 text-concha-tenue" />
-    <Concha
-      class="pointer-events-none absolute -bottom-24 -right-12 size-72 text-costra-tenue"
-    />
+    <div
+      class="croissant-mask pointer-events-none absolute -left-20 -top-8 h-52 w-64 bg-concha-tenue"
+      aria-hidden="true"
+    >
+    </div>
+    <div
+      class="croissant-mask pointer-events-none absolute -bottom-16 -right-14 h-60 w-72 -scale-x-100 bg-costra-tenue"
+      aria-hidden="true"
+    >
+    </div>
     <div class="relative mx-auto max-w-3xl px-5 py-24 text-center sm:py-32" data-reveal="group">
       <p class="text-xs font-semibold uppercase tracking-[0.18em] text-concha-hondo">
-        Panadería artesanal
+        Panadería artesanal · desde 1960
       </p>
       <h1 class="mt-4 font-display text-5xl leading-[1.05] text-cafe sm:text-6xl">
         Pan dulce, hecho en casa

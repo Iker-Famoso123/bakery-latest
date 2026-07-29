@@ -23,31 +23,33 @@ function tinteDe(slug: string) {
   return TINTES[h % TINTES.length]!;
 }
 
-/** Marca de agua: el patrón de cortes de la concha (idéntico al logo). */
-function ConchaMarca({ color }: { color: string }) {
+const CROISSANT_MASK = '/brand/croissant.png';
+
+/**
+ * Marca de agua: el croissant del logotipo formal, teñido vía CSS mask.
+ * El PNG vive en /public/brand de ambas apps (público y admin).
+ */
+function CroissantMarca({ color }: { color: string }) {
   return (
-    <svg
-      viewBox="0 0 32 32"
+    <div
       aria-hidden="true"
       style={{
         position: 'absolute',
-        right: '-2.6rem',
-        bottom: '-2.6rem',
+        right: '-2.4rem',
+        bottom: '-1.6rem',
         width: '11rem',
-        height: '11rem',
-        color,
-        opacity: 0.14,
+        height: '8.5rem',
+        backgroundColor: color,
+        opacity: 0.28,
+        WebkitMaskImage: `url(${CROISSANT_MASK})`,
+        maskImage: `url(${CROISSANT_MASK})`,
+        WebkitMaskRepeat: 'no-repeat',
+        maskRepeat: 'no-repeat',
+        WebkitMaskSize: 'contain',
+        maskSize: 'contain',
         pointerEvents: 'none',
       }}
-    >
-      <circle cx="16" cy="16" r="14" fill="currentColor" />
-      <g stroke="#3b2a24" strokeWidth="1.6" fill="none" opacity="0.4" strokeLinecap="round">
-        <path d="M16 3 V29" />
-        <path d="M3 16 H29" />
-        <path d="M6.5 6.5 L25.5 25.5" />
-        <path d="M25.5 6.5 L6.5 25.5" />
-      </g>
-    </svg>
+    />
   );
 }
 
@@ -149,7 +151,7 @@ export function PostCard({ post, preview = false, transitionName }: PostCardProp
           /* Sin foto no hay morph al detalle: el transitionName no aplica aquí. */
         }}
       >
-        <ConchaMarca color={tinte.marca} />
+        <CroissantMarca color={tinte.marca} />
         <div style={{ position: 'relative' }}>
           {post.pinned ? <ChipFijado /> : null}
           <h3
