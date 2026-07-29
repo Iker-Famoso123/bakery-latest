@@ -106,3 +106,11 @@ export const IconInfinity = (p: SVGProps<SVGSVGElement>) => (
     <path d="M6 9a3 3 0 1 0 0 6c2 0 3-2 6-3 3-1 4-3 6-3a3 3 0 1 1 0 6c-2 0-3-2-6-3-3-1-4-3-6-3Z" />
   </Icon>
 );
+
+export const IconImagen = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <circle cx="9" cy="10" r="1.5" />
+    <path d="M3 17l5-4 3 2.5L16 11l5 4" />
+  </Icon>
+);

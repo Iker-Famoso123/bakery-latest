@@ -75,6 +75,19 @@
     padding-left: 1.4rem;
     margin: 0.5rem 0;
   }
+  .prosa :where(img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0.75rem 0;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-linea);
+  }
+  /* Imagen seleccionada dentro del editor */
+  .prosa :where(img.ProseMirror-selectednode) {
+    outline: 2px solid var(--color-concha);
+    outline-offset: 2px;
+  }
   .prosa:focus {
     outline: none;
   }

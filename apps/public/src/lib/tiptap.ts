@@ -75,6 +75,13 @@ function renderNode(node: Node): string {
       return '<br />';
     case 'horizontalRule':
       return '<hr />';
+    case 'image': {
+      // Imagen subida desde el editor del panel (variante full en R2).
+      const src = String(node.attrs?.src ?? '');
+      if (!/^https?:\/\//.test(src)) return ''; // solo URLs http(s)
+      const alt = escapeHtml(String(node.attrs?.alt ?? ''));
+      return `<img src="${escapeHtml(src)}" alt="${alt}" loading="lazy" />`;
+    }
     default:
       // Nodo desconocido: renderiza su contenido para no perder texto.
       return renderNodes(node.content);
