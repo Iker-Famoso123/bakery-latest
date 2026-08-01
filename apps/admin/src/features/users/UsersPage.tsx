@@ -15,7 +15,7 @@ import {
 } from '../../components/ui';
 import { ApiError } from '../../lib/api';
 import { useAuthStore } from '../../stores/auth';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { useCreateUser, useSetUserActive, useUsers } from './api';
 
 export function UsersPage() {

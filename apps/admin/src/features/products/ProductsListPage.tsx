@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { confirm } from '../../components/ConfirmDialog';
 import { IconEdit, IconPlus, IconTrash } from '../../components/icons';
 import { Button, Card, Chip, EmptyState, PageHeader, Spinner } from '../../components/ui';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { useDeleteProduct, useProducts, useReorderProducts } from './api';
 
 export function ProductsListPage() {

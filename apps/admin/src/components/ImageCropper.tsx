@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Cropper, { type Area } from 'react-easy-crop';
 import { ApiError } from '../lib/api';
 import { useUploadImage } from '../lib/media';
-import { toast } from '../stores/toast';
+import { toast } from '../lib/toast';
 import { Modal, ModalActions } from './Modal';
 import { Button } from './ui';
 

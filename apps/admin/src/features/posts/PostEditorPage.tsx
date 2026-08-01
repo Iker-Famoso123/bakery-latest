@@ -8,7 +8,7 @@ import { ImageCropper } from '../../components/ImageCropper';
 import { Button, Card, Field, Input, PageHeader, Select, Spinner } from '../../components/ui';
 import { isoToLocalInput, localInputToISO, nowLocalInput } from '../../lib/dates';
 import { ApiError } from '../../lib/api';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { usePost, useSavePost, type PostInput } from './api';
 import { TiptapEditor } from './TiptapEditor';
 import { VigenciaField, type Vigencia } from './VigenciaField';

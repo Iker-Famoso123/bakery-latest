@@ -7,7 +7,7 @@ import { Spinner } from '../../components/ui';
 import { ApiError } from '../../lib/api';
 import { cn } from '../../lib/cn';
 import { useUploadImage } from '../../lib/media';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 
 interface Props {
   value: Record<string, unknown> | null;

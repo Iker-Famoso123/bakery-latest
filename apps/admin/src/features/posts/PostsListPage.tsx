@@ -5,7 +5,7 @@ import { confirm } from '../../components/ConfirmDialog';
 import { IconEdit, IconInfinity, IconPin, IconPlus, IconTrash } from '../../components/icons';
 import { Button, Card, Chip, EmptyState, PageHeader, Spinner } from '../../components/ui';
 import { formatDate } from '../../lib/dates';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { useDeletePost, usePosts } from './api';
 
 function StatusChip({ post }: { post: PostDto }) {

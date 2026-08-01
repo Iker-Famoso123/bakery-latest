@@ -2,7 +2,7 @@ import type { Horario, SettingsDto, SocialLink } from '@rf/types';
 import { type FormEvent, useState } from 'react';
 import { Button, Card, Field, Input, PageHeader, Spinner } from '../../components/ui';
 import { ApiError } from '../../lib/api';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { useSaveSettings, useSettings, type SettingsInput } from './api';
 import { HorariosEditor } from './HorariosEditor';
 import type { Coords } from './maps-url';
@@ -48,9 +48,13 @@ function SettingsForm({ settings }: { settings?: SettingsDto }) {
     };
     try {
       await save.mutateAsync(input);
-      toast.ok('Información guardada');
+      toast.ok('Información guardada', {
+        description: 'El pie de página y la sección Nosotros ya muestran los cambios.',
+      });
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'No se pudo guardar');
+      toast.error('No se pudo guardar', {
+        description: err instanceof ApiError ? err.message : 'Revisa tu conexión e inténtalo otra vez.',
+      });
     }
   }
 

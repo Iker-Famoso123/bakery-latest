@@ -2,7 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { Button, Input, Spinner } from '../../components/ui';
 import { ApiError, apiPost } from '../../lib/api';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { embedUrl, esEnlaceCorto, mapsLink, parseMapsInput, type Coords } from './maps-url';
 
 /**

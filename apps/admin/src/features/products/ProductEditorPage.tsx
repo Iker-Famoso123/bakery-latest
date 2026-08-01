@@ -6,7 +6,7 @@ import { IconPlus, IconX } from '../../components/icons';
 import { ImageCropper } from '../../components/ImageCropper';
 import { Button, Card, Field, Input, PageHeader, Spinner, Textarea } from '../../components/ui';
 import { ApiError } from '../../lib/api';
-import { toast } from '../../stores/toast';
+import { toast } from '../../lib/toast';
 import { useProduct, useSaveProduct, type ProductInput } from './api';
 
 export function ProductEditorPage() {

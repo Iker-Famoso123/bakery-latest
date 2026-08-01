@@ -107,6 +107,19 @@ export const IconInfinity = (p: SVGProps<SVGSVGElement>) => (
   </Icon>
 );
 
+export const IconCheck = (p: SVGProps<SVGSVGElement>) => (
+  <Icon strokeWidth="2.6" {...p}>
+    <path d="m5 12.5 4.5 4.5L19 7.5" />
+  </Icon>
+);
+
+export const IconAlerta = (p: SVGProps<SVGSVGElement>) => (
+  <Icon strokeWidth="2.6" {...p}>
+    <path d="M12 7v6" />
+    <path d="M12 17h.01" />
+  </Icon>
+);
+
 export const IconImagen = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}>
     <rect x="3" y="5" width="18" height="14" rx="2" />
